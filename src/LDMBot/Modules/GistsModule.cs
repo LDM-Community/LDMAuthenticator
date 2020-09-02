@@ -35,11 +35,9 @@ namespace papershredder432.LDMAuthenticator.Modules
                     var asJson = sr.ReadToEnd();
                     var outPut = JsonConvert.DeserializeObject<Gist>(asJson);
 
-                    var messageJumpUrl = Context.Message.GetJumpUrl();
-
                     var embed = new EmbedBuilder();
                     embed.WithTitle("New Auth Request");
-                    embed.WithDescription($"Requester: {outPut.Owner.Login}\n[Jump to request message]({messageJumpUrl})");
+                    embed.WithDescription($"Requester: {outPut.Owner.Login}");
                     embed.WithUrl(outPut.HtmlUrl.ToString());
                     embed.WithThumbnailUrl(outPut.Owner.AvatarUrl.ToString());
                     embed.AddField("Content", outPut.Files.LdmAuth.Content);
