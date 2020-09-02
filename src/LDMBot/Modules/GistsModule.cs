@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 
 namespace papershredder432.LDMAuthenticator.Modules
@@ -41,7 +42,10 @@ namespace papershredder432.LDMAuthenticator.Modules
                     embed.WithThumbnailUrl(outPut.Owner.AvatarUrl.ToString());
                     embed.AddField("Content", outPut.Files.LdmAuth.Content);
 
-                    await ReplyAsync(embed: embed.Build());
+                    var chnl = Context.Client.GetChannel(750528045290618901) as ISocketMessageChannel;
+                    chnl.SendMessageAsync(embed: embed.Build());
+                    
+                    await ReplyAsync($"Successfully sent a request under the GitHub name of {outPut.Owner.Login}.");
                 }
             }
         }
