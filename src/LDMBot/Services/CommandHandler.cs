@@ -26,7 +26,7 @@ namespace papershredder432.LDMAuthenticator.Services
 
             _discord.MessageReceived += OnMessageReceivedAsync;
 
-            _discord.SetGameAsync("See #gist-list!");
+            _discord.SetGameAsync("#gist-list", null, Discord.ActivityType.Watching);
         }
         
         private async Task OnMessageReceivedAsync(SocketMessage s)
