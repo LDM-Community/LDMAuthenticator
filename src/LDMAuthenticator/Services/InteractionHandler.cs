@@ -19,10 +19,6 @@ public class InteractionHandler
         _interaction = interaction;
         _loggingService = loggingService;
         _serviceProvider = serviceProvider;
-
-        _interaction.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
-
-        _discord.InteractionCreated += InteractionCreated;
     }
     
     public async Task InitializeAsync()
