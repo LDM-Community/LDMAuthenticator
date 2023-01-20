@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using System;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -34,6 +36,8 @@ public class LDMAuthenticator
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionHandler>()
                 .AddSingleton<LoggingService>()
+                .AddSingleton<DataService>()
+                .AddSingleton<MessageComponentHandler>()
                 .AddSingleton(new CommandService()))
             .Build();
 
@@ -50,11 +54,26 @@ public class LDMAuthenticator
         await provider.GetRequiredService<InteractionHandler>().InitializeAsync();
         var _config = provider.GetRequiredService<IConfigurationRoot>();
         var _loggingService = provider.GetRequiredService<LoggingService>();
+        var _dataSerivce = provider.GetRequiredService<DataService>();
+        var _messageComponentHandler = provider.GetRequiredService<MessageComponentHandler>();
 
         _client.Ready += async () =>
         {
-            await _commands.RegisterCommandsGloballyAsync();
-                
+            if (_config.GetSection("debug").Get<bool>())
+            {
+                await _commands.RegisterCommandsToGuildAsync(483456891498921994);
+                await _loggingService.LogVerbose(ELogType.Debug, "Started in debug mode!");
+
+                await _loggingService.LogVerbose(ELogType.Debug,
+                    $"Pending channel: {_config.GetSection("channels:debug:pending").Get<ulong>()}");
+                await _loggingService.LogVerbose(ELogType.Debug,
+                    $"Accepted channel: {_config.GetSection("channels:debug:accepted").Get<ulong>()}");
+            }
+            else
+            {
+                await _commands.RegisterCommandsGloballyAsync();
+            }
+
             await _loggingService.LogVerbose(ELogType.Info,
                 $"Client logged in as {_client.CurrentUser.Username} #{_client.CurrentUser.Discriminator} ({_client.CurrentUser.Id})");
             await _loggingService.LogVerbose(ELogType.Info, $"Registered {_commands.SlashCommands.Count} Slash Commands(s)");

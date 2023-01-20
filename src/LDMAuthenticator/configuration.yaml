@@ -1,2 +1,12 @@
 ﻿client:
   token: 
+
+debug: false
+
+channels:
+  release:
+    pending: 750528045290618901
+    accepted: 743626157252935741
+  debug:
+    pending: 1065119436010426458
+    accepted: 1065280203678564392
