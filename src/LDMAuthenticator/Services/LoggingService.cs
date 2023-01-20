@@ -1,4 +1,7 @@
-﻿using Discord;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LDMAuthenticator.Enum;
@@ -50,11 +53,11 @@ public class LoggingService
             
             if (msg == null && msg!.Length < 1) msg = "ERR";
 
-            if (logType == ELogType.Debug && _configuration["dev:debug"] != "true")
-                return Task.CompletedTask;
-            
             string logText = $"[{DateTime.UtcNow:u}] [{logType}/Verbose]: {msg}";
             File.AppendAllText(_verboseLogFile, logText + "\n");
+            
+            if (logType == ELogType.Debug && !_configuration.GetSection("debug").Get<bool>())
+                return Task.CompletedTask;
 
             return Console.Out.WriteLineAsync(logText);
         }
